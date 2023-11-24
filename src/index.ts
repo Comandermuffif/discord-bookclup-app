@@ -24,15 +24,27 @@ client.on(Events.GuildUpdate, async (guild) => {
   logger.info("Guild update");
 });
 
+client.on(Events.GuildIntegrationsUpdate, async (guild) => {
+  logger.info("Guild Integrations update");
+});
+
 client.on(Events.InteractionCreate, async (interaction) => {
   logger.info("Interaction create");
   if (!interaction.isCommand()) {
+    logger.info("Interaction is not a command");
     return;
   }
   const { commandName } = interaction;
   if (commands[commandName as keyof typeof commands]) {
+    logger.trace("Running", commandName);
     commands[commandName as keyof typeof commands].execute(interaction);
   }
+  else
+  {
+    logger.error("Failed to find command for", commandName);
+  }
+
+  logger.trace("Interaction handling complete");
 });
 
 client.login(config.DISCORD_TOKEN);
