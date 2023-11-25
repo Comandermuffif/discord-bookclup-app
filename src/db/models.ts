@@ -10,6 +10,19 @@ class Book {
     public sections: number;
 }
 
+class BookProgress {
+    constructor (bookID: string, userID: string, progress: number = 0) {
+        this.bookID = bookID;
+        this.userID = userID;
+        this.progress = progress;
+    }
+
+    public bookID: string;
+    public userID: string;
+    public progress: number;
+}
+
 export {
     Book,
+    BookProgress,
 }

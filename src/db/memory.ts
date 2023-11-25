@@ -1,26 +1,89 @@
-import { Book } from "./models";
+import { Book, BookProgress } from "./models";
 import { BookStorageInterface } from "./index"
 
+class BookShelf {
+    private books = new Map<string, Book>();
+    private progress = new Map<string, BookProgress>();
+
+    addBook(book: Book): boolean {
+        if (this.books.has(book.key)) { return false; }
+        this.books.set(book.key, book);
+        return true;
+    }
+
+    removeBook(bookID: string): boolean {
+        return this.books.delete(bookID);
+    }
+
+    listBooks(): Array<Book> {
+        return new Array(...this.books.values());
+    }
+
+    addProgress(userID: string, bookID: string, progress: number): boolean {
+        if (!this.books.has(bookID)) { return false; }
+        this.progress.set(this._progressKey(userID, bookID), new BookProgress(bookID, userID, progress));
+        return true;
+    }
+
+    removeProgress(userID: string, bookID: string): boolean {
+        return this.progress.delete(this._progressKey(userID, bookID));
+    }
+
+    getProgress(userID: string, bookID: string): number | undefined {
+        return this.progress.get(this._progressKey(userID, bookID))?.progress;
+    }
+
+    _progressKey(userID: string, bookID: string): string {
+        return `${userID}:${bookID}`;
+    }
+}
+
 class MemoryBookStorage implements BookStorageInterface {
-    knownBooks: Map<string, Map<string, Book>>;
+    knownBooks: Map<string, BookShelf>;
 
     constructor() {
-        this.knownBooks = new Map<string, Map<string, Book>>();
+        this.knownBooks = new Map<string, BookShelf>();
     }
 
-    addBook(guildID: string, book: Book): void {
-        const guildBooks = this.knownBooks.get(guildID) || new Map<string, Book>();
-        guildBooks.set(book.key, book);
-        this.knownBooks.set(guildID, guildBooks);
+    addBook(guildID: string, book: Book): boolean {
+        const bookshelf = this._getBookshelf(guildID);
+        if (bookshelf.addBook(book)) {
+            this.knownBooks.set(guildID, bookshelf);
+            return true;
+        }
+        return false;
     }
 
-    removeBook(guildID: string, key: string): void {
-        const guildBooks = this.knownBooks.get(guildID) || new Map<string, Book>();
-        guildBooks.delete(key);
+    removeBook(guildID: string, key: string): boolean {
+        const bookshelf = this._getBookshelf(guildID);
+        return bookshelf.removeBook(key);
     }
 
-    listBooks(guildID: string): Map<string, Book> {
-        return this.knownBooks.get(guildID) || new Map<string, Book>();
+    listBooks(guildID: string): Array<Book> {
+        return this._getBookshelf(guildID).listBooks();
+    }
+
+    addProgress(guildID: string, userID: string, bookID: string, progress: number): boolean {
+        const bookshelf = this._getBookshelf(guildID);
+        return bookshelf.addProgress(userID, bookID, progress);
+    }
+
+    removeProgress(guildID: string, userID: string, bookID: string): boolean {
+        const bookshelf = this._getBookshelf(guildID);
+        if (bookshelf.removeProgress(userID, bookID)) {
+            this.knownBooks.set(guildID, bookshelf);
+            return true;
+        }
+        return false;
+    }
+
+    getProgress(guildID: string, userID: string, bookID: string): number | undefined {
+        const bookshelf = this._getBookshelf(guildID);
+        return bookshelf.getProgress(userID, bookID);
+    }
+
+    _getBookshelf(guildID: string): BookShelf {
+        return this.knownBooks.get(guildID) || new BookShelf();
     }
 };
 
