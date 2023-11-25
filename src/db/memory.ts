@@ -29,8 +29,12 @@ class BookShelf {
         return this.progress.delete(this._progressKey(userID, bookID));
     }
 
-    getProgress(userID: string, bookID: string): number | undefined {
-        return this.progress.get(this._progressKey(userID, bookID))?.progress;
+    getProgresses(userID:string): Array<BookProgress> {
+        throw Error("Not implemented");
+    }
+
+    getProgress(userID: string, bookID: string): BookProgress | undefined {
+        return this.progress.get(this._progressKey(userID, bookID));
     }
 
     _progressKey(userID: string, bookID: string): string {
@@ -77,7 +81,12 @@ class MemoryBookStorage implements BookStorageInterface {
         return false;
     }
 
-    getProgress(guildID: string, userID: string, bookID: string): number | undefined {
+    getProgresses(guildID:string, userID:string): Array<BookProgress> {
+        const bookshelf = this._getBookshelf(guildID);
+        return bookshelf.getProgresses(userID);
+    }
+
+    getProgress(guildID: string, userID: string, bookID: string): BookProgress | undefined {
         const bookshelf = this._getBookshelf(guildID);
         return bookshelf.getProgress(userID, bookID);
     }

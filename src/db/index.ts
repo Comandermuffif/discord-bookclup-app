@@ -1,5 +1,5 @@
 import { MemoryBookStorage } from "./memory";
-import { Book } from "./models";
+import { Book, BookProgress } from "./models";
 
 interface BookStorageInterface {
     addBook(guildID:string, book:Book): boolean;
@@ -8,7 +8,8 @@ interface BookStorageInterface {
 
     addProgress(guildID:string, userID:string, bookID:string, progress:number): boolean;
     removeProgress(guildID:string, userID:string, bookID:string): boolean;
-    getProgress(guildID:string, userID:string, bookID:string): number | undefined;
+    getProgresses(guildID:string, userID:string): Array<BookProgress>;
+    getProgress(guildID:string, userID:string, bookID:string): BookProgress | undefined;
 }
 
 const bookStorage:BookStorageInterface = new MemoryBookStorage();
