@@ -1,28 +1,50 @@
-import { Client } from "discord.js";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 import { config } from "./config";
 import { commands } from "./commands";
 import { deployCommands } from "./deploy-commands";
+import { logger } from "./utils/logger";
 
 export const client = new Client({
-  intents: ["Guilds", "GuildMessages", "DirectMessages"],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+  ],
 });
 
-client.once("ready", () => {
-  console.log("Discord bot is ready! 🤖");
+client.once(Events.ClientReady, () => {
+  logger.info("Discord bot is ready! 🤖");
 });
 
-client.on("guildCreate", async (guild) => {
+client.on(Events.GuildCreate, async (guild) => {
+  logger.info("Guild create");
   await deployCommands({ guildId: guild.id });
 });
 
-client.on("interactionCreate", async (interaction) => {
+client.on(Events.GuildUpdate, async (guild) => {
+  logger.info("Guild update");
+});
+
+client.on(Events.GuildIntegrationsUpdate, async (guild) => {
+  logger.info("Guild Integrations update");
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+  logger.info("Interaction create");
   if (!interaction.isCommand()) {
+    logger.info("Interaction is not a command");
     return;
   }
   const { commandName } = interaction;
   if (commands[commandName as keyof typeof commands]) {
+    logger.trace("Running", commandName);
     commands[commandName as keyof typeof commands].execute(interaction);
   }
+  else
+  {
+    logger.error("Failed to find command for", commandName);
+  }
+
+  logger.trace("Interaction handling complete");
 });
 
 client.login(config.DISCORD_TOKEN);
