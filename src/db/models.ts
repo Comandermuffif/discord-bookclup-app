@@ -1,4 +1,25 @@
-type Book = {
+export type PerGuild = {
+    /**
+     * The ID of the guild this is from
+     */
+    guildID: string;
+};
+
+export type PerBook = {
+    /**
+     * The ID of the book this is from
+     */
+    bookID: string;
+};
+
+export type PerUser = {
+    /**
+     * The ID of the user this is from
+     */
+    userID: string;
+};
+
+export type Book = PerGuild & {
     /** 
      * The short ID of the book
      */
@@ -8,24 +29,9 @@ type Book = {
      * The human readable name
      */
     name: string;
-
-    /**
-     * The sections to the book
-     */
-    sections: Array<BookSection>;
-
-    /**
-     * The progress of all those reading this
-     */
-    readers: Array<BookProgress>;
 }
 
-type BookSection = {
-    /**
-     * The ID of the book this is for
-     */
-    bookID: string;
-
+export type BookSection = PerGuild & PerBook & {
     /**
      * The sort order of the section
      */
@@ -37,25 +43,14 @@ type BookSection = {
     description: string;
 }
 
-type BookProgress = {
-    /**
-     * The ID of the book this is for
-     */
-    bookID: string;
-
-    /**
-     * The ID of the user
-     */
-    userID: string;
-
+export type BookProgress = PerGuild & PerBook & PerUser & {
     /**
      * The section number they are currently on
      */
-    currentSection: number;
-}
+    sectionIndex: number;
 
-export {
-    Book,
-    BookSection,
-    BookProgress,
-};
+    /**
+     * The last time this was updated
+     */
+    lastUpdated: Date;
+}

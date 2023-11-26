@@ -22,13 +22,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   };
 
   if (interaction.options.getSubcommand() == "reading") {
-    const bookLines = bookStorage.getProgressByUser(interaction.guildId, interaction.user.id)?.map((progress) => {
+    const bookLines = bookStorage.listProgressByUser(interaction.guildId, interaction.user.id)?.map((progress) => {
       const book = bookStorage.getBook(interaction.guildId, progress.bookID);
       if (!book) { return undefined; };
+      const sections = bookStorage.listSections(interaction.guildId, book.key);
+      const progresses = bookStorage.listProgressByBook(interaction.guildId, book.key);
       return [
         `- [${book.key}] ${book.name}`,
-        `  - Progress ${progress.currentSection}/${book.sections.length}`,
-        `  - There are ${book.readers.length - 1} other readers`,
+        `  - Progress ${progress.sectionIndex}/${sections.length}`,
+        `  - There are ${progresses.length - 1} other readers`,
       ].join("\n");
     });
 

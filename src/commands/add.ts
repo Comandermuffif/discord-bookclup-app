@@ -27,13 +27,12 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   };
 
   const book:Book = {
+    guildID: interaction.guildId,
     key: interaction.options.getString("key", true),
     name: interaction.options.getString("name", true),
-    sections: [],
-    readers: [],
   };
 
-  bookStorage.addBook(interaction.guildId, book);
+  bookStorage.addBook(book);
 
   return interaction.reply(`Added ${book.name}`);
 }
