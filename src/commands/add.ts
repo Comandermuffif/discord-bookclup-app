@@ -1,6 +1,5 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Book, bookStorage } from "../db";
-import { logger } from "../utils/logger";
 
 export const data = new SlashCommandBuilder()
   .setName("add")
@@ -19,18 +18,22 @@ export const data = new SlashCommandBuilder()
       .setMinValue(1)
       .setRequired(true));
 
-export async function execute(interaction: CommandInteraction) {
-  logger.info("Add book called", interaction.options.get("key")?.value);
+export async function execute(interaction: ChatInputCommandInteraction) {
+  if (!interaction.guildId) {
+    return interaction.reply({
+      ephemeral: true,
+      content: "No guild ID provided",
+    });
+  };
 
-  if (!interaction.guildId) { return interaction.reply("Error") };
-
-  const book = new Book(
-    interaction.options.get("key")?.value as string,
-    interaction.options.get("name")?.value as string,
-    interaction.options.get("sections")?.value as number,
-  );
+  const book:Book = {
+    key: interaction.options.getString("key", true),
+    name: interaction.options.getString("name", true),
+    sections: [],
+    readers: [],
+  };
 
   bookStorage.addBook(interaction.guildId, book);
 
-  return interaction.reply("Book Added");
+  return interaction.reply(`Added ${book.name}`);
 }

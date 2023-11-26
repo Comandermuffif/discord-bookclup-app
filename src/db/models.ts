@@ -1,28 +1,61 @@
-class Book {
-    constructor (key: string, name: string, sections: number) {
-        this.key = key
-        this.name = name;
-        this.sections = sections;
-    }
+type Book = {
+    /** 
+     * The short ID of the book
+     */
+    key: string;
 
-    public key: string;
-    public name: string;
-    public sections: number;
+    /**
+     * The human readable name
+     */
+    name: string;
+
+    /**
+     * The sections to the book
+     */
+    sections: Array<BookSection>;
+
+    /**
+     * The progress of all those reading this
+     */
+    readers: Array<BookProgress>;
 }
 
-class BookProgress {
-    constructor (bookID: string, userID: string, progress: number = 0) {
-        this.bookID = bookID;
-        this.userID = userID;
-        this.progress = progress;
-    }
+type BookSection = {
+    /**
+     * The ID of the book this is for
+     */
+    bookID: string;
 
-    public bookID: string;
-    public userID: string;
-    public progress: number;
+    /**
+     * The sort order of the section
+     */
+    index: number;
+
+    /**
+     * The human readable decription of the section
+     */
+    description: string;
+}
+
+type BookProgress = {
+    /**
+     * The ID of the book this is for
+     */
+    bookID: string;
+
+    /**
+     * The ID of the user
+     */
+    userID: string;
+
+    /**
+     * The section number they are currently on
+     */
+    currentSection: number;
 }
 
 export {
     Book,
+    BookSection,
     BookProgress,
-}
+};

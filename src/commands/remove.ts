@@ -1,6 +1,5 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bookStorage } from "../db";
-import { logger } from "../utils/logger";
 
 export const data = new SlashCommandBuilder()
   .setName("remove")
@@ -10,12 +9,17 @@ export const data = new SlashCommandBuilder()
       .setDescription("Short ID for the book")
       .setRequired(true));
 
-export async function execute(interaction: CommandInteraction) {
-  logger.debug("Remove book called", interaction.options.get("key")?.value);
+export async function execute(interaction: ChatInputCommandInteraction) {
+  if (!interaction.guildId) {
+    return interaction.reply({
+      ephemeral: true,
+      content: "No guild ID provided",
+    });
+  };
 
-  if (!interaction.guildId) { return interaction.reply("Error") };
-
-  bookStorage.removeBook(interaction.guildId, interaction.options.get("key")?.value as string);
-
-  return interaction.reply("Book removed");
+  bookStorage.removeBook(interaction.guildId, interaction.options.getString("key", true));
+  return interaction.reply({
+    ephemeral: true,
+    content: "Book removed",
+  });
 }
