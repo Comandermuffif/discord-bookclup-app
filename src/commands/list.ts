@@ -34,10 +34,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       };
       const book = bookStorage.getBook(bookIdentifier);
       if (!book) { return undefined; };
-      const sections = bookStorage.listSections(interaction.guildId, book.key);
-      const progresses = bookStorage.listProgressByBook(interaction.guildId, book.key);
+      const sections = bookStorage.listSections(interaction.guildId, book.id);
+      const progresses = bookStorage.listProgressByBook(interaction.guildId, book.id);
       return [
-        `- [${book.key}] ${book.name}`,
+        `- [${book.id}] ${book.name}`,
         `  - Progress ${progress.sectionIndex}/${sections.length}`,
         `  - There are ${progresses.length - 1} other readers`,
       ].join("\n");
@@ -51,6 +51,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   return interaction.reply({
     ephemeral: true,
-    content: `# Books:${bookStorage.listBooks(guildIdentifier).map((x) => `\n- ${x.name}\n  - Key: \`${x.key}\`\n  - Sections: \`${x.sections}\``)}`,
+    content: `# Books:${bookStorage.listBooks(guildIdentifier).map((x) => `\n- ${x.name}\n  - Key: \`${x.id}\`\n  - Sections: \`${x.sections}\``)}`,
   });
 }

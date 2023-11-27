@@ -6,7 +6,7 @@ export const data = new SlashCommandBuilder()
   .setName("remove")
   .setDescription("Remove a book")
   .addStringOption((option) =>
-    option.setName("key")
+    option.setName("id")
       .setDescription("Short ID for the book")
       .setRequired(true));
 
@@ -20,7 +20,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const bookIdentifier: PerGuildBook = {
     guildID: interaction.guildId,
-    bookID: interaction.options.getString("key", true),
+    bookID: interaction.options.getString("id", true),
   };
 
   bookStorage.removeBook(bookIdentifier);

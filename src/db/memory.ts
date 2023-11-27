@@ -7,11 +7,11 @@ class MemoryBookStorage implements BookStorageInterface {
     private progresses = new Array<BookProgress>();
 
     addBook(book: Book, force=false): boolean {
-        const existingBook = this.getBook({guildID: book.guildID, bookID: book.key});
+        const existingBook = this.getBook({guildID: book.guildID, bookID: book.id});
 
         if (existingBook) {
             if (force) {
-                this.removeBook({ guildID: book.guildID, bookID: book.key});
+                this.removeBook({ guildID: book.guildID, bookID: book.id});
             } else {
                 // This function does not overwrite existing books, unless forced
                 return false; 
@@ -22,7 +22,7 @@ class MemoryBookStorage implements BookStorageInterface {
         return true;
     }
     removeBook({guildID, bookID}:PerGuildBook): boolean {
-        const newBooks = this.books.filter((x) => x.guildID ==  guildID && x.key != bookID);
+        const newBooks = this.books.filter((x) => x.guildID ==  guildID && x.id != bookID);
         if (newBooks.length != this.books.length) {
             this.books = newBooks;
             return true;
@@ -30,7 +30,7 @@ class MemoryBookStorage implements BookStorageInterface {
         return false;
     }
     getBook({guildID, bookID}:PerGuildBook): Book | undefined {
-        return this.books.find((x) => x.guildID == guildID && x.key == bookID);
+        return this.books.find((x) => x.guildID == guildID && x.id == bookID);
     }
     listBooks({guildID}:PerGuild): Book[] {
         return this.books.filter((x) => x.guildID == guildID);

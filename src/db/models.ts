@@ -27,7 +27,7 @@ export type Book = PerGuild & {
     /** 
      * The short ID of the book
      */
-    key: string;
+    id: string;
 
     /**
      * The human readable name

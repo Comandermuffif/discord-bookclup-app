@@ -5,7 +5,7 @@ export const data = new SlashCommandBuilder()
   .setName("add")
   .setDescription("Add a new book")
   .addStringOption((option) =>
-    option.setName("key")
+    option.setName("id")
       .setDescription("Short ID for the book")
       .setRequired(true))
   .addStringOption((option) =>
@@ -28,7 +28,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const book:Book = {
     guildID: interaction.guildId,
-    key: interaction.options.getString("key", true),
+    id: interaction.options.getString("id", true),
     name: interaction.options.getString("name", true),
   };
 

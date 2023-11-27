@@ -7,7 +7,7 @@ test("addSection", () => {
     const section = getSampleSection(book, 1);
 
     expect(storage.addSection(section)).toBe(true);
-    expect(storage.listSections(book.guildID, book.key)).toContain(section);
+    expect(storage.listSections(book.guildID, book.id)).toContain(section);
 });
 
 test("removeSection", () => {
@@ -16,9 +16,9 @@ test("removeSection", () => {
     const section = getSampleSection(book, 1);
 
     expect(storage.addSection(section)).toBe(true);
-    expect(storage.listSections(book.guildID, book.key)).toContain(section);
-    expect(storage.removeSection(book.guildID, book.key, section.index)).toBe(true);
-    expect(storage.listSections(book.guildID, book.key)).not.toContain(section);
+    expect(storage.listSections(book.guildID, book.id)).toContain(section);
+    expect(storage.removeSection(book.guildID, book.id, section.index)).toBe(true);
+    expect(storage.listSections(book.guildID, book.id)).not.toContain(section);
 });
 
 test("getSection", () => {
@@ -27,6 +27,6 @@ test("getSection", () => {
     const section = getSampleSection(book, 1);
 
     expect(storage.addSection(section)).toBe(true);
-    expect(storage.getSection(book.guildID, book.key, section.index)).toBe(section);
-    expect(storage.getSection(book.guildID, book.key, section.index + 1)).toBeUndefined();
+    expect(storage.getSection(book.guildID, book.id, section.index)).toBe(section);
+    expect(storage.getSection(book.guildID, book.id, section.index + 1)).toBeUndefined();
 });

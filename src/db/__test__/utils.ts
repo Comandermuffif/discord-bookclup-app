@@ -3,7 +3,7 @@ import { Book, BookProgress, BookSection } from "../models";
 export function getSampleBook(): Book {
     return {
         guildID: "asdf",
-        key: "fw",
+        id: "fw",
         name: "Fourth Wing"
     };
 }
@@ -11,7 +11,7 @@ export function getSampleBook(): Book {
 export function getSampleProgress(book: Book, userID:string, section:number): BookProgress {
     return {
         guildID: book.guildID,
-        bookID: book.key,
+        bookID: book.id,
         userID,
         lastUpdated: new Date(Date.now()),
         sectionIndex: section,
@@ -21,7 +21,7 @@ export function getSampleProgress(book: Book, userID:string, section:number): Bo
 export function getSampleSection(book: Book, index:number, description=""): BookSection {
     return {
         guildID: book.guildID,
-        bookID: book.key,
+        bookID: book.id,
         index,
         description,
     };

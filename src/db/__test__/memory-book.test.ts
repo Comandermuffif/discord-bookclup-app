@@ -35,7 +35,7 @@ test("removeBook", () => {
 
     expect(storage.addBook(book)).toBe(true);
     expect(storage.listBooks({guildID: book.guildID})).toContain(book);
-    expect(storage.removeBook({guildID: book.guildID, bookID: book.key})).toBe(true);
+    expect(storage.removeBook({guildID: book.guildID, bookID: book.id})).toBe(true);
     expect(storage.listBooks({guildID: book.guildID})).not.toContain(book);
 });
 
@@ -44,5 +44,5 @@ test("getBook", () => {
     const book = getSampleBook();
 
     expect(storage.addBook(book)).toBe(true);
-    expect(storage.getBook({guildID: book.guildID, bookID: book.key})).toBe(book);
+    expect(storage.getBook({guildID: book.guildID, bookID: book.id})).toBe(book);
 });
