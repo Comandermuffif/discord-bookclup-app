@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bookStorage } from "../db";
+import { PerGuild, PerGuildBook } from "../db/models";
 
 export const data = new SlashCommandBuilder()
   .setName("list")
@@ -21,9 +22,17 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
   };
 
+  const guildIdentifier: PerGuild = {
+    guildID: interaction.guildId,
+  };
+
   if (interaction.options.getSubcommand() == "reading") {
     const bookLines = bookStorage.listProgressByUser(interaction.guildId, interaction.user.id)?.map((progress) => {
-      const book = bookStorage.getBook(interaction.guildId, progress.bookID);
+      const bookIdentifier:PerGuildBook = {
+        guildID: progress.guildID,
+        bookID: progress.bookID,
+      };
+      const book = bookStorage.getBook(bookIdentifier);
       if (!book) { return undefined; };
       const sections = bookStorage.listSections(interaction.guildId, book.key);
       const progresses = bookStorage.listProgressByBook(interaction.guildId, book.key);
@@ -42,6 +51,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   return interaction.reply({
     ephemeral: true,
-    content: `# Books:${bookStorage.listBooks(interaction.guildId).map((x) => `\n- ${x.name}\n  - Key: \`${x.key}\`\n  - Sections: \`${x.sections}\``)}`,
+    content: `# Books:${bookStorage.listBooks(guildIdentifier).map((x) => `\n- ${x.name}\n  - Key: \`${x.key}\`\n  - Sections: \`${x.sections}\``)}`,
   });
 }

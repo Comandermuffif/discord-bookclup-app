@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bookStorage } from "../db";
+import { PerGuildBook } from "../db/models";
 
 export const data = new SlashCommandBuilder()
   .setName("remove")
@@ -17,7 +18,12 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
   };
 
-  bookStorage.removeBook(interaction.guildId, interaction.options.getString("key", true));
+  const bookIdentifier: PerGuildBook = {
+    guildID: interaction.guildId,
+    bookID: interaction.options.getString("key", true),
+  };
+
+  bookStorage.removeBook(bookIdentifier);
   return interaction.reply({
     ephemeral: true,
     content: "Book removed",

@@ -1,4 +1,4 @@
-import { Book, BookProgress, BookSection } from "./models";
+import { Book, BookProgress, BookSection, PerGuild, PerGuildBook } from "./models";
 import { BookStorageInterface } from "./index";
 
 class MemoryBookStorage implements BookStorageInterface {
@@ -6,27 +6,33 @@ class MemoryBookStorage implements BookStorageInterface {
     private sections = new Array<BookSection>();
     private progresses = new Array<BookProgress>();
 
-    addBook(book: Book): boolean {
-        const existingBook = this.getBook(book.guildID, book.key);
+    addBook(book: Book, force=false): boolean {
+        const existingBook = this.getBook({guildID: book.guildID, bookID: book.key});
+
         if (existingBook) {
-            // This function does not overwrite existing books 
-            return false;
+            if (force) {
+                this.removeBook({ guildID: book.guildID, bookID: book.key});
+            } else {
+                // This function does not overwrite existing books, unless forced
+                return false; 
+            }
         }
+
         this.books.push(book);
         return true;
     }
-    removeBook(guildID: string, key: string): boolean {
-        const newBooks = this.books.filter((x) => x.guildID ==  guildID && x.key != key);
+    removeBook({guildID, bookID}:PerGuildBook): boolean {
+        const newBooks = this.books.filter((x) => x.guildID ==  guildID && x.key != bookID);
         if (newBooks.length != this.books.length) {
             this.books = newBooks;
             return true;
         }
         return false;
     }
-    getBook(guildID: string, key: string): Book | undefined {
-        return this.books.find((x) => x.guildID == guildID && x.key == key);
+    getBook({guildID, bookID}:PerGuildBook): Book | undefined {
+        return this.books.find((x) => x.guildID == guildID && x.key == bookID);
     }
-    listBooks(guildID: string): Book[] {
+    listBooks({guildID}:PerGuild): Book[] {
         return this.books.filter((x) => x.guildID == guildID);
     }
 

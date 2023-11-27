@@ -19,6 +19,10 @@ export type PerUser = {
     userID: string;
 };
 
+export type PerGuildBook = PerGuild & PerBook;
+export type PerGuildBookUser = PerGuild & PerBook & PerUser;
+export type PerGuildUser = PerGuild & PerUser;
+
 export type Book = PerGuild & {
     /** 
      * The short ID of the book
@@ -31,7 +35,7 @@ export type Book = PerGuild & {
     name: string;
 }
 
-export type BookSection = PerGuild & PerBook & {
+export type BookSection = PerGuildBook & {
     /**
      * The sort order of the section
      */
@@ -43,7 +47,7 @@ export type BookSection = PerGuild & PerBook & {
     description: string;
 }
 
-export type BookProgress = PerGuild & PerBook & PerUser & {
+export type BookProgress = PerGuildBookUser & {
     /**
      * The section number they are currently on
      */

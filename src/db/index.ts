@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { MemoryBookStorage } from "./memory";
-import { Book, BookProgress, BookSection } from "./models";
+import { Book, BookProgress, BookSection, PerGuild, PerGuildBook } from "./models";
 
 interface BookStorageInterface {
     addBook(book:Book): boolean;
-    removeBook(guildID:string, key:string): boolean;
-    getBook(guildID:string, key:string): Book | undefined;
-    listBooks(guildID:string): Array<Book>;
+    addBook(book:Book, force:boolean): boolean;
+    removeBook(identifier:(PerGuildBook)): boolean;
+    getBook(identifier:(PerGuildBook)): Book | undefined;
+    listBooks(identifier:(PerGuild)): Array<Book>;
 
     addSection(section:BookSection): boolean;
     removeSection(guildID:string, bookID:string, sectionIndex:number): boolean;
