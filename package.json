@@ -17,7 +17,7 @@
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "pg": "^8.11.3",
-    "postgrator": "^7.2.0",
+    "postgrator": "^5.0.1",
     "tslog": "^4.9.2"
   },
   "devDependencies": {

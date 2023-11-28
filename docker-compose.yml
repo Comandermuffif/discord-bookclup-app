@@ -7,6 +7,13 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data/pgdata
+      - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: vincent@onebrief.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    ports:
+      - 80:80
 volumes:
   pgdata: {}
