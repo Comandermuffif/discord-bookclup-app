@@ -1,15 +1,21 @@
-class Book {
-    constructor (key: string, name: string, sections: number) {
-        this.key = key
-        this.name = name;
-        this.sections = sections;
-    }
+export type User = {
+    id: string,
+};
 
-    public key: string;
-    public name: string;
-    public sections: number;
-}
+export type Book = {
+    id: string;
+    name: string;
+    link: string;
 
-export {
-    Book,
-}
+    sections: Array<Section>;
+};
+
+export type Section = {
+    order: number;
+    description: string;
+};
+
+export type Progress = {
+    section: number;
+    lastUpdated: Date;
+};
