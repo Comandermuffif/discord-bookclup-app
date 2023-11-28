@@ -1,26 +1,90 @@
-import { Book } from "./models";
-import { BookStorageInterface } from "./index"
+import { Book, BookProgress, BookSection, PerGuild, PerGuildBook } from "./models";
+import { BookStorageInterface } from "./index";
 
 class MemoryBookStorage implements BookStorageInterface {
-    knownBooks: Map<string, Map<string, Book>>;
+    private books = new Array<Book>();
+    private sections = new Array<BookSection>();
+    private progresses = new Array<BookProgress>();
 
-    constructor() {
-        this.knownBooks = new Map<string, Map<string, Book>>();
+    addBook(book: Book, force=false): boolean {
+        const existingBook = this.getBook({guildID: book.guildID, bookID: book.id});
+
+        if (existingBook) {
+            if (force) {
+                this.removeBook({ guildID: book.guildID, bookID: book.id});
+            } else {
+                // This function does not overwrite existing books, unless forced
+                return false; 
+            }
+        }
+
+        this.books.push(book);
+        return true;
+    }
+    removeBook({guildID, bookID}:PerGuildBook): boolean {
+        const newBooks = this.books.filter((x) => x.guildID ==  guildID && x.id != bookID);
+        if (newBooks.length != this.books.length) {
+            this.books = newBooks;
+            return true;
+        }
+        return false;
+    }
+    getBook({guildID, bookID}:PerGuildBook): Book | undefined {
+        return this.books.find((x) => x.guildID == guildID && x.id == bookID);
+    }
+    listBooks({guildID}:PerGuild): Book[] {
+        return this.books.filter((x) => x.guildID == guildID);
     }
 
-    addBook(guildID: string, book: Book): void {
-        const guildBooks = this.knownBooks.get(guildID) || new Map<string, Book>();
-        guildBooks.set(book.key, book);
-        this.knownBooks.set(guildID, guildBooks);
+    addSection(section: BookSection): boolean {
+        const existingSection = this.getSection(section.guildID, section.bookID, section.index);
+        if (existingSection) {
+            // Don't override existing sections
+            return false;
+        }
+        this.sections.push(section);
+        return true;
+    }
+    removeSection(guildID: string, bookID: string, sectionIndex: number): boolean {
+        const newSections = this.sections.filter((x) => !(x.guildID == guildID && x.bookID == bookID && x.index == sectionIndex));
+        if (newSections.length != this.sections.length) {
+            this.sections = newSections;
+            return true;
+        }
+        return false;
+    }
+    getSection(guildID: string, bookID: string, sectionIndex: number): BookSection | undefined {
+        return this.sections.find((x) => x.guildID == guildID && x.bookID == bookID && x.index == sectionIndex);
+    }
+    listSections(guildID: string, bookID: string): BookSection[] {
+        return this.sections.filter((x) => x.guildID == guildID && x.bookID == bookID);
     }
 
-    removeBook(guildID: string, key: string): void {
-        const guildBooks = this.knownBooks.get(guildID) || new Map<string, Book>();
-        guildBooks.delete(key);
+    addProgress(progress:BookProgress): boolean {
+        const existingProgress = this.getProgress(progress.guildID, progress.userID, progress.bookID);
+        if (existingProgress) {
+            // This function does not overwrite progresses
+            return false;
+        }
+        this.progresses.push(progress);
+        return true;
     }
-
-    listBooks(guildID: string): Map<string, Book> {
-        return this.knownBooks.get(guildID) || new Map<string, Book>();
+    removeProgress(guildID: string, userID: string, bookID: string): boolean {
+        const newProgresses = this.progresses.filter((x) => !(x.guildID == guildID && x.bookID == bookID && x.userID == userID));
+        if (newProgresses.length != this.books.length) {
+            this.progresses = newProgresses;
+            return true;
+        }
+        return false;
+    }
+    getProgress(guildID: string, userID: string, bookID: string): BookProgress | undefined {
+        return this.progresses.find((x) => x.guildID == guildID && x.bookID == bookID && x.userID == userID);
+    }
+    listProgressByUser(guildID: string, userID: string): BookProgress[] {
+        return this.progresses.filter((x) => x.guildID == guildID && x.userID == userID);
+    }
+    listProgressByBook(guildID: string, bookID: string): BookProgress[] {
+        return this.progresses.filter((x) => x.guildID == guildID && x.bookID == bookID);
     }
 };
 
