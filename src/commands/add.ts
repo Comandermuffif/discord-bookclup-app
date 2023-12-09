@@ -5,18 +5,17 @@ export const data = new SlashCommandBuilder()
   .setName("add")
   .setDescription("Add a new book")
   .addStringOption((option) =>
-    option.setName("id")
-      .setDescription("Short ID for the book")
-      .setRequired(true))
-  .addStringOption((option) =>
-    option.setName("name")
+    option
+      .setName("name")
       .setDescription("Name of the book")
-      .setRequired(true))
-  .addNumberOption((option) =>
-    option.setName("sections")
-      .setDescription("Number of progress sections in this book")
-      .setMinValue(1)
-      .setRequired(true));
+      .setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("link")
+      .setDescription("Name of the book")
+      .setRequired(false)
+  );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   if (!interaction.guildId) {
@@ -24,11 +23,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       ephemeral: true,
       content: "No guild ID provided",
     });
-  };
+  }
 
-  const book:Book = {
-    guildID: interaction.guildId,
-    id: interaction.options.getString("id", true),
+  const book: Book = {
+    guild_id: interaction.guildId,
     name: interaction.options.getString("name", true),
   };
 

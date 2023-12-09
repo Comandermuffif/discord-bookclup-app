@@ -5,10 +5,7 @@ import { deployCommands } from "./deploy-commands";
 import { logger } from "./utils/logger";
 
 export const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-  ],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
 client.once(Events.ClientReady, () => {
@@ -38,9 +35,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (commands[commandName as keyof typeof commands]) {
     logger.trace("Running", commandName);
     commands[commandName as keyof typeof commands].execute(interaction);
-  }
-  else
-  {
+  } else {
     logger.error("Failed to find command for", commandName);
   }
 

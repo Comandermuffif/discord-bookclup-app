@@ -1,14 +1,15 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bookStorage } from "../db";
-import { PerGuildBook } from "../db/models";
 
 export const data = new SlashCommandBuilder()
   .setName("remove")
   .setDescription("Remove a book")
   .addStringOption((option) =>
-    option.setName("id")
+    option
+      .setName("id")
       .setDescription("Short ID for the book")
-      .setRequired(true));
+      .setRequired(true)
+  );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   if (!interaction.guildId) {
@@ -16,16 +17,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       ephemeral: true,
       content: "No guild ID provided",
     });
-  };
+  }
 
-  const bookIdentifier: PerGuildBook = {
-    guildID: interaction.guildId,
-    bookID: interaction.options.getString("id", true),
-  };
-
-  bookStorage.removeBook(bookIdentifier);
   return interaction.reply({
     ephemeral: true,
-    content: "Book removed",
+    content: "Not implemented",
   });
 }

@@ -1,21 +1,20 @@
-export type User = {
-    id: string,
-};
-
 export type Book = {
-    id: string;
-    name: string;
-    link: string;
-
-    sections: Array<Section>;
+  id?: number;
+  name: string;
+  link?: string;
+  guild_id: string;
 };
 
 export type Section = {
-    order: number;
-    description: string;
+  id: number;
+  description: string;
+  order: number;
+  book_id: number;
 };
 
 export type Progress = {
-    section: number;
-    lastUpdated: Date;
+  id: number;
+  user_id: string;
+  section_id: number;
+  updated: Date;
 };

@@ -1,30 +1,30 @@
-/* eslint-disable no-unused-vars */
-import { MemoryBookStorage } from "./memory";
-import { Book, BookProgress, BookSection, PerGuild, PerGuildBook } from "./models";
+import { Book, Progress, Section } from "./models";
+import { PostgresBookStorage } from "./postgres";
 
 interface BookStorageInterface {
-    addBook(book:Book): boolean;
-    addBook(book:Book, force:boolean): boolean;
-    removeBook(identifier:(PerGuildBook)): boolean;
-    getBook(identifier:(PerGuildBook)): Book | undefined;
-    listBooks(identifier:(PerGuild)): Array<Book>;
+  addBook(book: Book): Promise<number>;
+  removeBook(book_id: number): Promise<number>;
+  getBook(book_id: number): Promise<Book>;
+  listBooks(guild_id: string): Promise<Array<Book>>;
 
-    addSection(section:BookSection): boolean;
-    removeSection(guildID:string, bookID:string, sectionIndex:number): boolean;
-    getSection(guildID:string, bookID:string, sectionIndex:number): BookSection | undefined;
-    listSections(guildID:string, bookID:string): Array<BookSection>;
+  addSection(section: Section): Promise<number>;
+  removeSection(section_id: number): Promise<number>;
+  getSection(section_id: number): Promise<Section>;
+  listSections(book_id: number): Promise<Array<Section>>;
 
-    addProgress(progress:BookProgress): boolean;
-    removeProgress(guildID:string, userID:string, bookID:string): boolean;
-    getProgress(guildID:string, userID:string, bookID:string): BookProgress | undefined;
-    listProgressByUser(guildID:string, userID:string): Array<BookProgress>;
-    listProgressByBook(guildID:string, bookID:string): Array<BookProgress>;
+  addProgress(progress: Progress): Promise<number>;
+  removeProgress(progress_id: number): Promise<number>;
+  getProgress(progress_id: number): Promise<Progress>;
+  listProgressByUser(book_id: number): Promise<Array<Progress>>;
+  listProgressByBook(user_id: string): Promise<Array<Progress>>;
 }
 
-const bookStorage:BookStorageInterface = new MemoryBookStorage();
+const bookStorage: BookStorageInterface = new PostgresBookStorage({
+  host: "localhost",
+  port: 5432,
+  database: "postgres",
+  user: "postgres",
+  password: "test",
+});
 
-export {
-    Book,
-    BookStorageInterface,
-    bookStorage,
-};
+export { Book, BookStorageInterface, bookStorage };
