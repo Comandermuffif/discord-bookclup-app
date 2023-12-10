@@ -6,6 +6,6 @@ import * as remove from "./remove";
 export const commands = {
   add,
   list,
-  // read,
-  // remove,
+  read,
+  remove,
 };

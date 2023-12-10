@@ -13,6 +13,7 @@ export const data = new SlashCommandBuilder()
   .addNumberOption((option) => 
     option
       .setName("section")
+      .setDescription("The section that has been read")
       .setMinValue(0)
       .setRequired(true));
 

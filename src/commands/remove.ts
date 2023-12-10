@@ -11,6 +11,7 @@ export const data = new SlashCommandBuilder()
       .addStringOption((option) => 
         option
           .setName("book")
+          .setDescription("Name of the book to remove")
           .setRequired(true)
           .setAutocomplete(true)))
   .addSubcommand((subcommand) => 
@@ -20,11 +21,13 @@ export const data = new SlashCommandBuilder()
       .addStringOption((option) => 
         option
           .setName("book")
+          .setDescription("Name of the book to remove a section from")
           .setRequired(true)
           .setAutocomplete(true))
       .addNumberOption((option) =>
         option
           .setName("section")
+          .setDescription("The section to remove")
           .setMinValue(0)
           .setRequired(true)));
 
