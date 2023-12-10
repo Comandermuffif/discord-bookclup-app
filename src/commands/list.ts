@@ -1,9 +1,13 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bookStorage } from "../db";
 
 export const data = new SlashCommandBuilder()
   .setName("list")
   .setDescription("List books");
+
+export async function autocomplete(interaction: AutocompleteInteraction) {
+  throw new Error('Not implemented');
+};
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   if (!interaction.guildId) {

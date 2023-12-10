@@ -53,6 +53,7 @@ export class PostgresBookStorage implements BookStorageInterface {
     });
     return response.rows;
   }
+
   async addSection(section: Section): Promise<number> {
     const response = await this.pool.query<{ id: number }>({
       text: "INSERT INTO sections(description, \"order\", book_id) VALUES ($1, $2, $3) RETURNING id",
@@ -60,32 +61,61 @@ export class PostgresBookStorage implements BookStorageInterface {
     });
     return response.rows[0].id;
   }
-  removeSection(section_id: number): Promise<number> {
-    throw new Error("Method not implemented.");
+  async removeSection(section_id: number): Promise<number> {
+    const response = await this.pool.query<{ id: number }>({
+      text: "DELETE FROM sections WHERE id = $1 RETURNING id",
+      values: [section_id],
+    });
+    return response.rows[0].id;
   }
-  getSection(section_id: number): Promise<Section> {
-    throw new Error("Method not implemented.");
+  async getSection(section_id: number): Promise<Section> {
+    const response = await this.pool.query<Section>({
+      text: "SELECT * FROM sections WHERE id = $1",
+      values: [section_id],
+    });
+    return response.rows[0];
   }
   async listSections(book_id: number): Promise<Section[]> {
     const response = await this.pool.query<Section>({
-      text: "SELECT * FROM books WHERE book_id = $1",
+      text: "SELECT * FROM sections WHERE book_id = $1",
       values: [book_id],
     });
     return response.rows;
   }
-  addProgress(progress: Progress): Promise<number> {
-    throw new Error("Method not implemented.");
+
+  async addProgress(progress: Progress): Promise<number> {
+    const response = await this.pool.query<{ id: number }>({
+      text: "INSERT INTO progresses(user_id, section_id, updated) VALUES ($1, $2, $3) RETURNING id",
+      values: [progress.user_id, progress.section_id, progress.updated],
+    });
+    return response.rows[0].id;
   }
-  removeProgress(progress_id: number): Promise<number> {
-    throw new Error("Method not implemented.");
+  async removeProgress(progress_id: number): Promise<number> {
+    const response = await this.pool.query<{ id: number }>({
+      text: "DELETE FROM progresses WHERE id = $1 RETURNING id",
+      values: [progress_id],
+    });
+    return response.rows[0].id;
   }
-  getProgress(progress_id: number): Promise<Progress> {
-    throw new Error("Method not implemented.");
+  async getProgress(progress_id: number): Promise<Progress> {
+    const response = await this.pool.query<Progress>({
+      text: "SELECT * FROM progresses WHERE id = $1",
+      values: [progress_id],
+    });
+    return response.rows[0];
   }
-  listProgressByUser(book_id: number): Promise<Progress[]> {
-    throw new Error("Method not implemented.");
+  async listProgressByUser(book_id: number): Promise<Progress[]> {
+    const response = await this.pool.query<Progress>({
+      text: "SELECT * FROM progresses WHERE book_id = $1",
+      values: [book_id],
+    });
+    return response.rows;
   }
-  listProgressByBook(user_id: string): Promise<Progress[]> {
-    throw new Error("Method not implemented.");
+  async listProgressByBook(user_id: string): Promise<Progress[]> {
+    const response = await this.pool.query<Progress>({
+      text: "SELECT * FROM progresses WHERE user_id = $1",
+      values: [user_id],
+    });
+    return response.rows;
   }
 }

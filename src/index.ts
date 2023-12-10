@@ -26,17 +26,30 @@ client.on(Events.GuildIntegrationsUpdate, async (guild) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  logger.info("Interaction create");
-  if (!interaction.isCommand()) {
-    logger.info("Interaction is not a command");
-    return;
+  if (interaction.isAutocomplete()) {
+    logger.info("Interaction is autocomplete");
+
+    const { commandName } = interaction;
+    logger.info("Interaction create", commandName);
+    if (commands[commandName as keyof typeof commands]) {
+      logger.trace("Running", commandName);
+      commands[commandName as keyof typeof commands].autocomplete(interaction);
+    } else {
+      logger.error("Failed to find command for", commandName);
+    }
   }
-  const { commandName } = interaction;
-  if (commands[commandName as keyof typeof commands]) {
-    logger.trace("Running", commandName);
-    commands[commandName as keyof typeof commands].execute(interaction);
-  } else {
-    logger.error("Failed to find command for", commandName);
+
+  if (interaction.isCommand()) {
+    logger.info("Interaction is command");
+
+    const { commandName } = interaction;
+    logger.info("Interaction create", commandName);
+    if (commands[commandName as keyof typeof commands]) {
+      logger.trace("Running", commandName);
+      commands[commandName as keyof typeof commands].execute(interaction);
+    } else {
+      logger.error("Failed to find command for", commandName);
+    }
   }
 
   logger.trace("Interaction handling complete");
