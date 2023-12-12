@@ -15,8 +15,8 @@ interface BookStorageInterface {
   addProgress(progress: Progress): Promise<number>;
   removeProgress(progress_id: number): Promise<number>;
   getProgress(progress_id: number): Promise<Progress>;
-  listProgressByUser(book_id: number): Promise<Array<Progress>>;
-  listProgressByBook(user_id: string): Promise<Array<Progress>>;
+  listProgressByUser(user_id: string): Promise<Array<Progress>>;
+  listProgressByBook(book_id: number): Promise<Array<Progress>>;
 }
 
 const bookStorage: BookStorageInterface = new PostgresBookStorage({

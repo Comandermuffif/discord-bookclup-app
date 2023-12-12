@@ -104,14 +104,14 @@ export class PostgresBookStorage implements BookStorageInterface {
     });
     return response.rows[0];
   }
-  async listProgressByUser(book_id: number): Promise<Progress[]> {
+  async listProgressByBook(book_id: number): Promise<Progress[]> {
     const response = await this.pool.query<Progress>({
       text: "SELECT * FROM progresses WHERE book_id = $1",
       values: [book_id],
     });
     return response.rows;
   }
-  async listProgressByBook(user_id: string): Promise<Progress[]> {
+  async listProgressByUser(user_id: string): Promise<Progress[]> {
     const response = await this.pool.query<Progress>({
       text: "SELECT * FROM progresses WHERE user_id = $1",
       values: [user_id],

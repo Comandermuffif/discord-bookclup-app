@@ -51,6 +51,39 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
   }
 
+  const interactionBook = interaction.options.getString("book", true);
+  const books = await bookStorage.listBooks(interaction.guildId);
+  const book = books.find((x) => x.name == interactionBook);
+
+  if (!book || !book.id) {
+    return interaction.reply({
+      ephemeral: true,
+      content: `No book with title ${interactionBook} found`,
+    });
+  }
+
+  if (interaction.options.getSubcommand(true) == "book") {    
+    await bookStorage.removeBook(book.id);  
+    return interaction.reply(`Removed ${interactionBook}`);
+  }
+
+  if (interaction.options.getSubcommand(true) == "section") {
+    const interactionSection = interaction.options.getNumber("section", true);
+
+    const sections = await bookStorage.listSections(book.id);
+    const section = sections.find((x) => x.order == interactionSection);
+
+    if (!section) {
+      return interaction.reply({
+        ephemeral: true,
+        content: `No section found for ${interactionSection} in ${interactionBook}`,
+      });
+    }
+
+    await bookStorage.removeSection(section.id);
+    return interaction.reply(`Removed ${interactionBook}`);
+  }
+
   return interaction.reply({
     ephemeral: true,
     content: "Not implemented",

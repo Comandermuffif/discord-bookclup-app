@@ -38,10 +38,10 @@ export const data = new SlashCommandBuilder()
           .setRequired(true)
           .setDescription("Order of the section, ascending")
       )
-      .addNumberOption((option) => 
+      .addStringOption((option) => 
         option
           .setName("description")
-          .setRequired(false)
+          .setRequired(true)
           .setDescription("Description of the section")
       )
   );
@@ -82,7 +82,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (interaction.options.getSubcommand(true) == "section") {
     const interactionTitle = interaction.options.getString("book", true);
     const interactionOrder = interaction.options.getNumber("order", true);
-    const interactionDescription = interaction.options.getString("description", false) || '';
+    const interactionDescription = interaction.options.getString("description", true);
 
     const books = await bookStorage.listBooks(interaction.guildId);
     const book = books.find((x) => x.name == interactionTitle);
